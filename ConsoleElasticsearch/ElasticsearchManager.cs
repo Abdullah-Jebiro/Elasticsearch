@@ -173,4 +173,13 @@ public class ElasticsearchManager
             Console.WriteLine($"Error: {response.ServerError?.Error?.Reason}");
         }
     }
+
+    public async Task DelaySeconds(int seconds)
+    {
+        Console.WriteLine($"Waiting for {seconds} seconds...");
+        await Task.Delay(seconds * 1000);
+        Console.WriteLine($"{seconds} seconds have passed.\n\n");
+
+    }
 }
+
