@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using Nest;
+using static System.Net.Mime.MediaTypeNames;
 
 public class ElasticsearchManager
 {
@@ -181,5 +182,28 @@ public class ElasticsearchManager
         Console.WriteLine($"{seconds} seconds have passed.\n\n");
 
     }
+    public async Task AnalyzeText(string indexName, string analyzerName, string text)
+    {
+        var analyzeRequest = new AnalyzeRequest(indexName)
+        {
+            Analyzer = analyzerName,
+            Text = new List<string> { text } // Wrap the text in a list
+        };
+
+        var analyzeResponse = await _client.Indices.AnalyzeAsync(analyzeRequest);
+
+        if (analyzeResponse.IsValid)
+        {
+            foreach (var token in analyzeResponse.Tokens)
+            {
+                Console.WriteLine($"Token: {token.Token}, Position: {token.Position}");
+            }
+        }
+        else
+        {
+            Console.WriteLine($"An error occurred during text analysis. Error: {analyzeResponse.DebugInformation}");
+        }
+    }
 }
+
 
