@@ -1,5 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using Nest;
+
 var manager = new ElasticsearchManager();
 manager.CreateIndex();
 manager.DeleteAllDocuments();
@@ -14,3 +16,13 @@ await manager.SearchWithSourceFiltering();
 await manager.ComplexSearch();
 await manager.AnalyzeText("employees", "english", "Good morninge");
 await manager.AnalyzeText("employees", "arabic", "ضباح الخير");
+/*Analyzers Built-in
+Standard
+Whitespace
+Keyword
+Pattern
+Language
+Fingerprint
+....,
+.....
+*/
