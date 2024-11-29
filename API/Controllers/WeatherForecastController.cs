@@ -12,15 +12,24 @@ namespace API.Controllers
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ElasticClientsManager elasticClientsManager;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger , ElasticClientsManager elasticClientsManager)
         {
             _logger = logger;
+            this.elasticClientsManager = elasticClientsManager;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<IEnumerable<WeatherForecast>> Get()
         {
+            await elasticClientsManager.ExecuteSearch();
+            await elasticClientsManager.ExecuteAggregation("report-submission-summary", "ProviderId");
+            await elasticClientsManager.ExecuteAggregation("report-submission-summary", "PlanName");
+            await elasticClientsManager.ExecuteAggregation("report-submission-summary", "EncounterPatientId");
+            await elasticClientsManager.ExecuteAggregation("report-submission-summary", "PlanName");
+            await elasticClientsManager.ExecuteAggregation("report-submission-summary", "PlanName");
+            await elasticClientsManager.ExecuteSearch();
             _logger.LogInformation("Fetching weather forecast data.");
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {

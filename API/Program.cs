@@ -1,3 +1,4 @@
+using Elastic.Clients.Elasticsearch;
 using Microsoft.EntityFrameworkCore;
 using Nest;
 using Serilog;
@@ -23,6 +24,14 @@ Log.Logger = new LoggerConfiguration()
    .CreateLogger();
 
 
+builder.Services.AddSingleton<ElasticsearchClient>(sp =>
+{
+    var settings = new ElasticsearchClientSettings(new Uri("http://localhost:9200"))
+    .DisableDirectStreaming()
+    .EnableDebugMode();
+    return new ElasticsearchClient(settings);
+});
+
 builder.Services.AddDbContext<DataContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -31,6 +40,7 @@ builder.Services.AddDbContext<DataContext>(opt =>
 
 // Add services to the container.
 builder.Services.AddScoped<IPatientService, PatientService>();
+builder.Services.AddScoped<ElasticClientsManager>();
 
 
 builder.Services.AddControllers();
